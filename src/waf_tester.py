@@ -41,7 +41,10 @@ logging.basicConfig(level=logging.INFO, format='[%(asctime)s] %(levelname)s: %(m
 #########################
 # Load Vulnerability Tests
 #########################
-def load_vulnerability_tests():
+def load_vulnerability_tests(comprehensive=False):
+    # Determine which JSON file to use.
+    json_filename = "vuln_tests_comprehensive.json" if comprehensive else "vuln_tests.json"
+    json_path = os.path.join("test_cases", json_filename)
     default_tests = [
         {
             "name": "SQL Injection",
@@ -96,7 +99,6 @@ def load_vulnerability_tests():
             "description": "Tests for Server-Side Request Forgery vulnerabilities."
         }
     ]
-    json_path = os.path.join("test_cases", "vuln_tests.json")
     if os.path.exists(json_path):
         try:
             with open(json_path, "r", encoding="utf-8") as f:
@@ -107,19 +109,16 @@ def load_vulnerability_tests():
             logging.error("Error loading vulnerability tests from JSON: %s", e)
             return default_tests
     else:
+        logging.warning("JSON file %s not found, using default vulnerability tests.", json_path)
         return default_tests
 
-vulnerability_tests = load_vulnerability_tests()
+vulnerability_tests = []  # Global variable to be loaded later.
 
 
 #########################
 # Input Field Detection
 #########################
 def detect_input_fields(url):
-    """
-    Fetches the target URL and uses BeautifulSoup to detect input fields from forms.
-    Returns a list of dictionaries with keys: name, method, and action.
-    """
     try:
         r = requests.get(url, timeout=10)
         soup = BeautifulSoup(r.text, "html.parser")
@@ -163,6 +162,7 @@ def add_number_modifier(payload, n):
 
 def generate_test_cases_for_inputs(input_fields, comprehensive=False):
     test_cases = []
+    # In quick mode, generate 10 variations per payload; in comprehensive mode, generate 100.
     num_variations = 100 if comprehensive else 10
     for field in input_fields:
         for vuln in vulnerability_tests:
@@ -460,6 +460,9 @@ def main():
 
     logging.info("Starting tests on %s", target_url)
     logging.info("Using detected input fields with their respective HTTP methods and actions.")
+
+    global vulnerability_tests
+    vulnerability_tests = load_vulnerability_tests(comprehensive=args.comprehensive)
 
     test_cases = generate_test_cases_for_inputs(input_fields, comprehensive=args.comprehensive)
     total_tests_count = len(test_cases)
