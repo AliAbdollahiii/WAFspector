@@ -19,7 +19,7 @@ Test your Web Application Firewall (WAF) against common web-based attacks to con
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/yourusername/waf-tester.git
+   git clone https://github.com/AliAbdollahiii/waf-tester.git
    cd waf-tester
    
 2. **Create and activate a virtual environment:**
